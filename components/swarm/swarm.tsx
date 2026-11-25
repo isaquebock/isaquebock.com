@@ -92,12 +92,9 @@ export function SwarmProvider({ children }: { children: React.ReactNode }) {
       await document.fonts?.ready;
       await sleep(200, signal);
 
-      // Movimento reduzido ou tela de toque (sem cursor para o enxame seguir):
-      // a página aparece já montada, sem agentes.
-      if (
-        matchMedia("(prefers-reduced-motion: reduce)").matches ||
-        !matchMedia("(pointer: fine)").matches
-      ) {
+      // Em telas de toque o enxame monta a página normalmente, mas não segue
+      // o cursor: espera no rodapé da tela e sai de cena ao terminar.
+      if (matchMedia("(prefers-reduced-motion: reduce)").matches) {
         setPhase("done");
         return;
       }
