@@ -1,26 +1,272 @@
 @import "tailwindcss";
 
+@custom-variant dark (&:where(.dark, .dark *));
+
+/* ---------- Tema ---------- */
 :root {
+  color-scheme: light;
   --background: #ffffff;
-  --foreground: #171717;
+  --foreground: #2b2b2b;
+  --card: #fafafa;
+  --border-color: #d9d9d9;
+  --title-color: #0a0a0a;
+  --strong-color: #000000;
+  --muted-color: #a3a3a3;
+  --mutedForeground-color: #6b6b6b;
+  --mutedBackground-color: #f4f4f4;
+  --mutedBackgroundHover-color: #eaeaea;
+  --grid-color: #e6e6e6;
+  /* Dashed layout lines: softer than --border-color, close to the background. */
+  --line-color: #ececec;
+
+  /* Green accent (darker in light mode, for contrast) */
+  --primary: oklch(0.55 0.15 152);
+  --primary-hover: oklch(0.49 0.14 152);
+  --primary-foreground: #ffffff;
+  --nonHover-color: var(--primary);
+
+  /* Tinta das capas dos projetos: cinza quase preto */
+  --cover-ink: #262626;
+  --hover-color: var(--primary-hover);
+
+  /* Tokens que o shadcn/dithercn esperam */
+  --border: var(--border-color);
+  --muted: var(--mutedBackground-color);
+  --muted-foreground: var(--mutedForeground-color);
+}
+
+.dark {
+  color-scheme: dark;
+  --background: #000000;
+  --foreground: #d6d6d6;
+  --card: #0c0c0c;
+  --border-color: #2a2a2a;
+  --title-color: #fafafa;
+  --strong-color: #ffffff;
+  --muted-color: #575757;
+  --mutedForeground-color: #a3a3a3;
+  --mutedBackground-color: #111111;
+  --mutedBackgroundHover-color: #1b1b1b;
+  --grid-color: #1c1c1c;
+  --line-color: #181818;
+
+  --primary: oklch(0.78 0.17 152);
+  --primary-hover: oklch(0.85 0.13 152);
+  --primary-foreground: #000000;
+
+  --cover-ink: #333333;
 }
 
 @theme inline {
   --color-background: var(--background);
   --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
+  --color-card: var(--card);
+  --color-primary: var(--primary);
+  --color-primary-hover: var(--primary-hover);
+  --color-primary-foreground: var(--primary-foreground);
+  --color-border: var(--border-color);
+  --color-title: var(--title-color);
+  --color-strong: var(--strong-color);
+  --color-muted: var(--muted-color);
+  --color-mutedForeground: var(--mutedForeground-color);
+  --color-mutedBackground: var(--mutedBackground-color);
+  --color-mutedBackgroundHover: var(--mutedBackgroundHover-color);
+  --color-nonHover: var(--nonHover-color);
+  --color-hover: var(--hover-color);
+  /* Tudo em Geist: o texto normal e o que usa a classe font-mono. */
+  --font-sans: var(--font-geist);
+  --font-mono: var(--font-geist);
+
+  /* dithercn */
+  --color-dither-ink: var(--dither-ink);
+  --color-dither-paper: var(--dither-paper);
+  --color-dither-blue: var(--dither-color-blue);
+  --color-dither-purple: var(--dither-color-purple);
+  --color-dither-green: var(--dither-color-green);
+  --color-dither-pink: var(--dither-color-pink);
+  --color-dither-orange: var(--dither-color-orange);
+  --color-dither-red: var(--dither-color-red);
+  --color-dither-grey: var(--dither-color-grey);
 }
 
-@media (prefers-color-scheme: dark) {
+/* Tokens do dithercn (dither-tokens) */
+@layer base {
   :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
+    --dither-ink: var(--primary);
+    --dither-paper: var(--background);
+    --dither-cell: 3px;
+    --dither-color-blue: oklch(0.56 0.18 248);
+    --dither-color-purple: oklch(0.53 0.22 302);
+    --dither-color-green: oklch(0.58 0.15 152);
+    --dither-color-pink: oklch(0.58 0.21 355);
+    --dither-color-orange: oklch(0.64 0.17 52);
+    --dither-color-red: oklch(0.55 0.21 27);
+    --dither-color-grey: oklch(0.55 0 0);
+    --dither-bloom: 0.6;
+  }
+  .dark {
+    --dither-ink: var(--primary);
+    --dither-paper: var(--background);
+    --dither-cell: 3px;
+    --dither-color-blue: oklch(0.72 0.14 240);
+    --dither-color-purple: oklch(0.7 0.18 304);
+    --dither-color-green: oklch(0.78 0.17 152);
+    --dither-color-pink: oklch(0.74 0.17 354);
+    --dither-color-orange: oklch(0.79 0.15 62);
+    --dither-color-red: oklch(0.68 0.2 25);
+    --dither-color-grey: oklch(0.66 0 0);
+    --dither-bloom: 1;
   }
 }
 
-body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+@layer base {
+  *,
+  ::before,
+  ::after {
+    border-color: var(--border-color);
+  }
+  body {
+    background: var(--background);
+    color: var(--foreground);
+  }
+  ::selection {
+    background: var(--primary);
+    color: var(--primary-foreground);
+  }
+}
+
+/* ---------- Linhas do layout: traço de 6px, espaço de 8px ---------- */
+@utility frame-x {
+  background-image:
+    repeating-linear-gradient(to bottom, var(--line-color) 0 6px, transparent 6px 14px),
+    repeating-linear-gradient(to bottom, var(--line-color) 0 6px, transparent 6px 14px);
+  background-size: 1px 100%, 1px 100%;
+  background-position: left top, right top;
+  background-repeat: no-repeat;
+}
+
+@utility dash-h {
+  background-image: repeating-linear-gradient(to right, var(--line-color) 0 6px, transparent 6px 14px);
+  background-size: 100% 1px;
+  background-repeat: no-repeat;
+}
+
+@utility dash-v {
+  background-image: repeating-linear-gradient(to bottom, var(--line-color) 0 6px, transparent 6px 14px);
+  background-size: 1px 100%;
+  background-repeat: no-repeat;
+}
+
+/* Xadrez de células de dither (3px), usado em esqueletos e superfícies quietas. */
+@utility bg-checker {
+  background-image: repeating-conic-gradient(var(--grid-color) 0 25%, transparent 0 50%);
+  background-size: calc(var(--dither-cell) * 2) calc(var(--dither-cell) * 2);
+}
+
+@keyframes slideDown {
+  0% {
+    clip-path: inset(0 0 100% 0);
+    transform: translateY(-4px);
+  }
+  100% {
+    clip-path: inset(0 0 0 0);
+    transform: translateY(0);
+  }
+}
+
+/* ---------- Swarm: blocos montados pelos agentes ---------- */
+[data-swarm] > :not([data-swarm-skeleton]) {
+  transition:
+    opacity 0.45s ease-out,
+    filter 0.45s ease-out,
+    transform 0.45s cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+[data-swarm="hidden"] > :not([data-swarm-skeleton]),
+[data-swarm="building"] > :not([data-swarm-skeleton]) {
+  opacity: 0;
+  filter: blur(6px);
+  transform: scale(0.97);
+}
+
+/* Esqueleto em xadrez de dither, como um bloco ainda não impresso. */
+[data-swarm-skeleton] {
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+  border-radius: 8px;
+  background-color: var(--mutedBackground-color);
+  background-image: repeating-conic-gradient(var(--mutedBackgroundHover-color) 0 25%, transparent 0 50%);
+  background-size: calc(var(--dither-cell) * 2) calc(var(--dither-cell) * 2);
+  pointer-events: none;
+  transition: opacity 0.35s ease-out;
+}
+
+[data-swarm="building"] > [data-swarm-skeleton] {
+  background-image: repeating-conic-gradient(
+    color-mix(in oklab, var(--primary) 45%, transparent) 0 25%,
+    transparent 0 50%
+  );
+  animation: swarm-pulse 0.9s steps(3) infinite;
+}
+
+[data-swarm="done"] > [data-swarm-skeleton] {
+  opacity: 0;
+}
+
+@keyframes swarm-pulse {
+  50% {
+    background-position: var(--dither-cell) 0;
+  }
+}
+
+/* ---------- Troca de tema: cortina de cima para baixo ---------- */
+::view-transition-old(root),
+::view-transition-new(root) {
+  animation: none;
+  mix-blend-mode: normal;
+}
+
+::view-transition-new(root) {
+  animation: theme-wipe 0.45s cubic-bezier(0.65, 0, 0.35, 1);
+}
+
+@keyframes theme-wipe {
+  from {
+    clip-path: inset(0 0 100% 0);
+  }
+  to {
+    clip-path: inset(0 0 0 0);
+  }
+}
+
+/* ---------- Scrollbar: thin, no track, thumb in the theme's border tone ---------- */
+::-webkit-scrollbar {
+  width: 10px;
+  height: 10px;
+}
+::-webkit-scrollbar-track,
+::-webkit-scrollbar-corner {
+  background: transparent;
+}
+::-webkit-scrollbar-thumb {
+  /* The transparent border makes the visible pill thinner than the hit area. */
+  border: 3px solid transparent;
+  border-radius: 999px;
+  background-color: var(--border-color);
+  background-clip: padding-box;
+}
+::-webkit-scrollbar-thumb:hover {
+  background-color: var(--muted-color);
+}
+::-webkit-scrollbar-thumb:active {
+  background-color: var(--primary);
+}
+
+/* Firefox has no pseudo-elements; it takes the standard properties instead. */
+@supports (-moz-appearance: none) {
+  * {
+    scrollbar-width: thin;
+    scrollbar-color: var(--border-color) transparent;
+  }
 }
