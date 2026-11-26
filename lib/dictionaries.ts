@@ -2,7 +2,7 @@ import type { Locale } from "@/lib/i18n";
 
 /** Interface strings. Content (bio, experiences, projects...) lives in data/localized.ts. */
 const en = {
-  nav: { home: "Home", projects: "Projects", experience: "Experience", search: "Search (⌘K)" },
+  nav: { home: "Home", projects: "Projects", experience: "Experience", resources: "Resources", writing: "Writing", search: "Search (⌘K)" },
   language: { label: "Language", switchTo: "Switch to Portuguese" },
   theme: { toggle: "Toggle theme" },
   sound: { mute: "Mute sounds", unmute: "Unmute sounds" },
@@ -35,6 +35,23 @@ const en = {
     subtitle: "Where I've worked and what I've built",
     description: (name: string, companies: string) =>
       `${name}'s work experience: ${companies}. Roles, responsibilities and the stack behind each one.`,
+  },
+  resourcesPage: {
+    title: "Resources",
+    subtitle: (n: number) => `${n} tools and references I keep coming back to`,
+    description:
+      "Tools and references Isaque Böck keeps coming back to: courses, inspiration, components, icons, fonts, motion, design systems and agent skills.",
+  },
+  writingPage: {
+    title: "Writing",
+    subtitle: "Articles on building products and interfaces, plus my study logs",
+    description: "Articles by Isaque Böck about building products, interfaces for people and AI agents, and the craft of product engineering, plus a study log.",
+    showLogs: "Show study logs",
+    log: "Log",
+    article: "Article",
+    back: "All writing",
+    empty: "Nothing published yet. The first articles are on the way.",
+    emptyWithLogs: "Nothing here yet.",
   },
   newsletter: {
     title: "Newsletter",
@@ -73,7 +90,7 @@ const en = {
 export type Dictionary = typeof en;
 
 const ptBr: Dictionary = {
-  nav: { home: "Início", projects: "Projetos", experience: "Experiência", search: "Buscar (⌘K)" },
+  nav: { home: "Início", projects: "Projetos", experience: "Experiência", resources: "Recursos", writing: "Escrita", search: "Buscar (⌘K)" },
   language: { label: "Idioma", switchTo: "Mudar para inglês" },
   theme: { toggle: "Alternar tema" },
   sound: { mute: "Desligar sons", unmute: "Ligar sons" },
@@ -106,6 +123,23 @@ const ptBr: Dictionary = {
     subtitle: "Onde trabalhei e o que construí",
     description: (name, companies) =>
       `Experiência profissional de ${name}: ${companies}. Cargos, responsabilidades e as tecnologias de cada um.`,
+  },
+  resourcesPage: {
+    title: "Recursos",
+    subtitle: (n) => `${n} ferramentas e referências que eu sempre revisito`,
+    description:
+      "Ferramentas e referências que Isaque Böck sempre revisita: cursos, inspiração, componentes, ícones, fontes, movimento, design systems e skills para agentes.",
+  },
+  writingPage: {
+    title: "Escrita",
+    subtitle: "Artigos sobre construir produtos e interfaces, e meus logs de estudo",
+    description: "Artigos de Isaque Böck sobre construir produtos, interfaces para pessoas e agentes de IA e o ofício de product engineering, além de um log de estudos.",
+    showLogs: "Mostrar logs de estudo",
+    log: "Log",
+    article: "Artigo",
+    back: "Todos os textos",
+    empty: "Nada publicado ainda. Os primeiros artigos estão a caminho.",
+    emptyWithLogs: "Nada por aqui ainda.",
   },
   newsletter: {
     title: "Newsletter",

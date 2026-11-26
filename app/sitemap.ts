@@ -1,6 +1,7 @@
 import type { MetadataRoute } from "next";
 import { projects } from "@/data/projects";
 import { now } from "@/data/now";
+import { posts } from "@/data/writing";
 import { localePath, locales } from "@/lib/i18n";
 import { languageAlternates, siteUrl } from "@/lib/seo";
 
@@ -8,6 +9,9 @@ const pages = [
   { path: "/", priority: 1 },
   { path: "/projects", priority: 0.8 },
   { path: "/experiences", priority: 0.8 },
+  { path: "/resources", priority: 0.6 },
+  { path: "/writing", priority: 0.6 },
+  ...posts.map((p) => ({ path: `/writing/${p.slug}`, priority: 0.5 })),
   ...projects.filter((p) => !p.draft).map((p) => ({ path: `/projects/${p.slug}`, priority: 0.6 })),
 ];
 

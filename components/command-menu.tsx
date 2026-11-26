@@ -6,7 +6,7 @@ import { useRouter } from "next/navigation";
 import { useTheme } from "next-themes";
 import { useThemeTransition } from "@/lib/theme-transition";
 import { Command } from "cmdk";
-import { BriefcaseIcon, FolderIcon, HomeIcon, LanguagesIcon, MoonIcon, SunIcon } from "lucide-react";
+import { BookmarkIcon, BriefcaseIcon, PenLineIcon, FolderIcon, HomeIcon, LanguagesIcon, MoonIcon, SunIcon } from "lucide-react";
 import { profile } from "@/data/profile";
 import { SocialIcon } from "./brand-icons";
 import { localePath } from "@/lib/i18n";
@@ -91,6 +91,12 @@ export function CommandMenu() {
           </Command.Item>
           <Command.Item className={item} onSelect={() => run(() => go("/experiences"))}>
             <BriefcaseIcon className="size-4 text-muted" /> {dict.nav.experience}
+          </Command.Item>
+          <Command.Item className={item} onSelect={() => run(() => go("/resources"))}>
+            <BookmarkIcon className="size-4 text-muted" /> {dict.nav.resources}
+          </Command.Item>
+          <Command.Item className={item} onSelect={() => run(() => go("/writing"))}>
+            <PenLineIcon className="size-4 text-muted" /> {dict.nav.writing}
           </Command.Item>
         </Command.Group>
 

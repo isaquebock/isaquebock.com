@@ -1,5 +1,7 @@
 import { profile } from "@/data/profile";
 import { skills } from "@/data/skills";
+import { resources } from "@/data/resources";
+import { posts } from "@/data/writing";
 import { getExperiences, getNow, getProfile, getProjects } from "@/data/localized";
 import { getDictionary } from "@/lib/dictionaries";
 import { defaultLocale, localePath } from "@/lib/i18n";
@@ -46,6 +48,8 @@ export function llmsIndex() {
     `- [Home](${url("/")}): bio, current focus, featured projects, recent experience and skills`,
     `- [Experience](${url("/experiences")}): every role, with responsibilities and stack`,
     `- [Projects](${url("/projects")}): all projects`,
+    `- [Resources](${url("/resources")}): curated links to courses, inspiration, components, icons, fonts, motion, design systems and agent skills`,
+    `- [Writing](${url("/writing")}): articles on building products and interfaces, plus an optional study log`,
     ...projects.map((p) => `- [${p.title}](${url(`/projects/${p.slug}`)}): ${p.description}`),
     "",
     "## Full content",
@@ -97,6 +101,16 @@ export function llmsFull() {
     "## Skills",
     "",
     skills.map((s) => s.name).join(", "),
+    "",
+    "## Writing and study log",
+    "",
+    ...[...posts]
+      .sort((a, b) => b.date.localeCompare(a.date))
+      .map((p) => `- ${p.date} (${p.kind}): [${p.title.en}](${url(`/writing/${p.slug}`)}): ${p.summary.en}`),
+    "",
+    "## Resources I recommend",
+    "",
+    ...resources.flatMap((c) => [`### ${c.title.en}`, "", ...c.items.map((r) => `- [${r.name}](${r.href}): ${r.note.en}`), ""]),
     "",
     "## Links",
     "",

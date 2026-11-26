@@ -15,24 +15,30 @@ import { useI18n } from "@/lib/locale-client";
 export function Navbar() {
   const { locale, dict } = useI18n();
   const pathname = stripLocale(usePathname());
+  const isActive = (href: string) => (href === "/" ? pathname === "/" : pathname.startsWith(href));
+  const linkClass = (active: boolean) =>
+    `text-[13px] leading-5 font-medium transition-colors duration-300 ${active ? "text-foreground" : "text-muted hover:text-mutedForeground"}`;
   const links = [
     { href: "/", label: dict.nav.home },
     { href: "/projects", label: dict.nav.projects },
     { href: "/experiences", label: dict.nav.experience },
+    { href: "/resources", label: dict.nav.resources },
+    { href: "/writing", label: dict.nav.writing },
   ];
   return (
     <header className="sticky top-0 z-50 bg-background/95 backdrop-blur-sm">
       <Row as="nav" className="px-3 h-12 flex items-center justify-between">
-        <div className="flex items-center gap-4">
-          <ul className="flex items-center gap-3">
+        {/* On narrow screens the links scroll sideways instead of pushing the buttons off. */}
+        <div className="flex min-w-0 items-center gap-4">
+          <ul className="flex items-center gap-3 overflow-x-auto [scrollbar-width:none] [&::-webkit-scrollbar]:hidden">
             {links.map((l) => {
-              const active = l.href === "/" ? pathname === "/" : pathname.startsWith(l.href);
+              const active = isActive(l.href);
               return (
-                <li key={l.href}>
+                <li key={l.href} className="flex shrink-0">
                   <Link
                     data-cuelume-navigate="select"
                     href={localePath(locale, l.href)}
-                    className={`text-sm font-medium transition-colors duration-300 ${active ? "text-foreground" : "text-muted hover:text-mutedForeground"}`}
+                    className={linkClass(active)}
                   >
                     {l.label}
                   </Link>
@@ -41,7 +47,7 @@ export function Navbar() {
             })}
           </ul>
         </div>
-        <div className="flex items-center gap-1">
+        <div className="flex shrink-0 items-center gap-1">
           <Tooltip label={dict.nav.search}>
             <button
               type="button"

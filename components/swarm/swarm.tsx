@@ -418,7 +418,13 @@ function TopLayer({ target, children }: { target: React.RefObject<HTMLDivElement
 
   if (!box) return null;
   return createPortal(
-    <div aria-hidden className="pointer-events-none absolute z-[90] overflow-x-clip" style={box}>
+    // While the pointer is over the header, the swarm fades out with a blur so
+    // it never covers the navigation; it comes back when the pointer leaves.
+    <div
+      aria-hidden
+      className="pointer-events-none absolute z-[90] overflow-x-clip transition-[opacity,filter] duration-300 ease-out [body:has(header:hover)_&]:opacity-0 [body:has(header:hover)_&]:blur-[6px]"
+      style={box}
+    >
       {children}
     </div>,
     document.body,
