@@ -3,9 +3,11 @@
 import { useEffect, useState } from "react";
 import { ArrowUpIcon } from "lucide-react";
 import { AnimatePresence, motion } from "motion/react";
+import { useI18n } from "@/lib/locale-client";
 
 export function ScrollToTop() {
   const [visible, setVisible] = useState(false);
+  const { dict } = useI18n();
 
   useEffect(() => {
     const onScroll = () => setVisible(window.scrollY > 400);
@@ -20,7 +22,7 @@ export function ScrollToTop() {
         <motion.button
           data-cuelume-tap=""
           type="button"
-          aria-label="Back to top"
+          aria-label={dict.scrollTop}
           initial={{ opacity: 0, y: 10 }}
           animate={{ opacity: 1, y: 0 }}
           exit={{ opacity: 0, y: 10 }}

@@ -41,7 +41,7 @@ export function ButtonLink({ href, children, icon, variant = "primary", external
         data-cuelume-tap=""
         href={href}
         {...linkProps}
-        className={`${inner} py-[9px] sm:py-[7px] group w-fit shrink-0 rounded-full border border-border bg-mutedBackground hover:bg-mutedBackgroundHover text-foreground`}
+        className={`${inner} py-[8px] sm:py-[6px] group w-fit shrink-0 rounded-full border border-border bg-mutedBackground hover:bg-mutedBackgroundHover text-foreground`}
       >
         {label}
       </Link>

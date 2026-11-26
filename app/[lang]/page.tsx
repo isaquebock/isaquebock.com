@@ -7,21 +7,29 @@ import { ExperienceItem } from "@/components/experience-item";
 import { Skills } from "@/components/skills";
 import { Newsletter } from "@/components/newsletter";
 import { Quote } from "@/components/quote";
+import { Now } from "@/components/now";
 import { Build, SwarmProvider } from "@/components/swarm/swarm";
-import { projects } from "@/data/projects";
-import { experiences } from "@/data/experiences";
+import { getExperiences, getProjects } from "@/data/localized";
+import { getI18n, getLocale } from "@/lib/locale-server";
+import { pageMetadata } from "@/lib/seo";
 import { skills } from "@/data/skills";
 
-export const metadata: Metadata = { alternates: { canonical: "/" } };
+export async function generateMetadata(): Promise<Metadata> {
+  const { alternates } = pageMetadata({ locale: await getLocale(), path: "/" });
+  return { alternates };
+}
 
-export default function Home() {
+export default async function Home() {
+  const { locale, dict } = await getI18n();
+  const projects = getProjects(locale);
+  const experiences = getExperiences(locale);
   const featured = projects.filter((p) => p.featured).slice(0, 4);
 
   return (
     <SwarmProvider>
       <Hero />
 
-      <Section title="Projects" aside={`${projects.length} projects`} viewAllHref="/projects">
+      <Section id="projects" title={dict.sections.projects} aside={dict.sections.projectsCount(projects.length)} viewAllHref="/projects">
         <DashedGrid>
           {featured.map((p) => (
             <Build key={p.slug} id={`project-${p.slug}`} className="flex h-full">
@@ -31,7 +39,9 @@ export default function Home() {
         </DashedGrid>
       </Section>
 
-      <Section title="Experience" aside={`${experiences.length} positions`} viewAllHref="/experiences">
+      <Now />
+
+      <Section id="experience" title={dict.sections.experience} aside={dict.sections.positionsCount(experiences.length)} viewAllHref="/experiences">
         <DashedList>
           {experiences.slice(0, 3).map((e, i) => (
             <Build key={e.company + e.period} id={`experience-${i}`}>
@@ -41,7 +51,7 @@ export default function Home() {
         </DashedList>
       </Section>
 
-      <Section title="Skills & Technologies" aside={`${skills.length}`} contentClassName="p-3">
+      <Section id="skills" title={dict.sections.skills} aside={`${skills.length}`} contentClassName="p-3">
         <Build id="skills">
           <Skills />
         </Build>

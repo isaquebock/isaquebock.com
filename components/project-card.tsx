@@ -2,10 +2,13 @@ import Link from "next/link";
 import { ArrowRightIcon } from "lucide-react";
 import type { Project } from "@/data/projects";
 import { ProjectCover } from "./dither/project-cover";
+import { localePath } from "@/lib/i18n";
+import { getI18n } from "@/lib/locale-server";
 
-export function ProjectCard({ project }: { project: Project }) {
+export async function ProjectCard({ project }: { project: Project }) {
+  const { locale, dict } = await getI18n();
   return (
-    <Link data-cuelume-navigate="select" href={`/projects/${project.slug}`} className="group flex flex-col gap-2 w-full">
+    <Link data-cuelume-navigate="select" href={localePath(locale, `/projects/${project.slug}`)} className="group flex flex-col gap-2 w-full">
       <div className="p-[4px] rounded-[14px] border border-border bg-card">
         <div className="relative w-full aspect-[16/7] overflow-hidden rounded-[10px] border border-border bg-mutedBackground">
           <ProjectCover
@@ -18,7 +21,7 @@ export function ProjectCard({ project }: { project: Project }) {
         <h3 className="font-medium tracking-tight text-title">{project.title}</h3>
         <p className="text-sm text-mutedForeground line-clamp-2">{project.description}</p>
         <span className="flex items-center gap-1 pt-1 text-sm font-medium text-muted group-hover:text-foreground transition-colors duration-300">
-          View project
+          {dict.project.view}
           <ArrowRightIcon className="size-3.5 transition-transform duration-300 group-hover:translate-x-0.5" />
         </span>
       </div>

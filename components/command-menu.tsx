@@ -6,10 +6,13 @@ import { useRouter } from "next/navigation";
 import { useTheme } from "next-themes";
 import { useThemeTransition } from "@/lib/theme-transition";
 import { Command } from "cmdk";
-import { BriefcaseIcon, FolderIcon, HomeIcon, MoonIcon, SunIcon } from "lucide-react";
+import { BriefcaseIcon, FolderIcon, HomeIcon, LanguagesIcon, MoonIcon, SunIcon } from "lucide-react";
 import { profile } from "@/data/profile";
-import { projects } from "@/data/projects";
 import { SocialIcon } from "./brand-icons";
+import { localePath } from "@/lib/i18n";
+import { useI18n } from "@/lib/locale-client";
+import { getProjects } from "@/data/localized";
+import { useSwitchLocale } from "./language-toggle";
 
 export const OPEN_COMMAND_MENU = "open-command-menu";
 
@@ -34,6 +37,10 @@ export function CommandMenu() {
     selected.current = false;
   }, [open]);
   const router = useRouter();
+  const { locale, dict } = useI18n();
+  const projects = getProjects(locale);
+  const switchLocale = useSwitchLocale();
+  const go = (path: string) => router.push(localePath(locale, path));
   const { resolvedTheme } = useTheme();
   const toggleTheme = useThemeTransition();
 
@@ -64,43 +71,43 @@ export function CommandMenu() {
     <Command.Dialog
       open={open}
       onOpenChange={setOpen}
-      label="Search"
+      label={dict.command.label}
       overlayClassName="fixed inset-0 z-[100] bg-black/30 backdrop-blur-xs"
       contentClassName="fixed left-1/2 top-[18%] z-[101] w-[calc(100%-2rem)] max-w-[520px] -translate-x-1/2 rounded-[14px] border border-border bg-card shadow-2xl overflow-hidden"
     >
       <Command.Input
-        placeholder="Search pages, projects, links..."
+        placeholder={dict.command.placeholder}
         className="w-full px-4 py-3 text-sm bg-transparent border-b border-border outline-none text-foreground placeholder:text-muted"
       />
       <Command.List className="max-h-[340px] overflow-y-auto p-1.5">
-        <Command.Empty className="py-6 text-center text-sm text-muted">No results found.</Command.Empty>
+        <Command.Empty className="py-6 text-center text-sm text-muted">{dict.command.empty}</Command.Empty>
 
-        <Command.Group heading="Pages" className={group}>
-          <Command.Item className={item} onSelect={() => run(() => router.push("/"))}>
-            <HomeIcon className="size-4 text-muted" /> Home
+        <Command.Group heading={dict.command.pages} className={group}>
+          <Command.Item className={item} onSelect={() => run(() => go("/"))}>
+            <HomeIcon className="size-4 text-muted" /> {dict.nav.home}
           </Command.Item>
-          <Command.Item className={item} onSelect={() => run(() => router.push("/projects"))}>
-            <FolderIcon className="size-4 text-muted" /> Projects
+          <Command.Item className={item} onSelect={() => run(() => go("/projects"))}>
+            <FolderIcon className="size-4 text-muted" /> {dict.nav.projects}
           </Command.Item>
-          <Command.Item className={item} onSelect={() => run(() => router.push("/experiences"))}>
-            <BriefcaseIcon className="size-4 text-muted" /> Experience
+          <Command.Item className={item} onSelect={() => run(() => go("/experiences"))}>
+            <BriefcaseIcon className="size-4 text-muted" /> {dict.nav.experience}
           </Command.Item>
         </Command.Group>
 
-        <Command.Group heading="Projects" className={group}>
+        <Command.Group heading={dict.command.projects} className={group}>
           {projects.map((p) => (
             <Command.Item
               key={p.slug}
               value={`project ${p.title} ${p.slug}`}
               className={item}
-              onSelect={() => run(() => router.push(`/projects/${p.slug}`))}
+              onSelect={() => run(() => go(`/projects/${p.slug}`))}
             >
               <FolderIcon className="size-4 text-muted" /> {p.title}
             </Command.Item>
           ))}
         </Command.Group>
 
-        <Command.Group heading="Socials" className={group}>
+        <Command.Group heading={dict.command.socials} className={group}>
           {profile.socials.map((s) => (
             <Command.Item key={s.name} className={item} onSelect={() => run(() => window.open(s.href, "_blank"))}>
               <SocialIcon name={s.icon} className="size-4 text-muted" /> {s.name}
@@ -108,13 +115,23 @@ export function CommandMenu() {
           ))}
         </Command.Group>
 
-        <Command.Group heading="Theme" className={group}>
+        <Command.Group heading={dict.command.theme} className={group}>
           <Command.Item
             className={item}
             onSelect={() => run(toggleTheme)}
           >
             {resolvedTheme === "dark" ? <SunIcon className="size-4 text-muted" /> : <MoonIcon className="size-4 text-muted" />}
-            Toggle theme
+            {dict.theme.toggle}
+          </Command.Item>
+        </Command.Group>
+
+        <Command.Group heading={dict.command.language} className={group}>
+          <Command.Item
+            className={item}
+            onSelect={() => run(() => switchLocale(locale === "en" ? "pt-br" : "en"))}
+          >
+            <LanguagesIcon className="size-4 text-muted" />
+            {dict.command.switchLanguage}
           </Command.Item>
         </Command.Group>
       </Command.List>

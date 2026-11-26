@@ -1,18 +1,29 @@
 import type { MetadataRoute } from "next";
 import { projects } from "@/data/projects";
-import { siteUrl } from "@/lib/seo";
+import { localePath, locales } from "@/lib/i18n";
+import { languageAlternates, siteUrl } from "@/lib/seo";
 
+const pages = [
+  { path: "/", priority: 1 },
+  { path: "/projects", priority: 0.8 },
+  { path: "/experiences", priority: 0.8 },
+  ...projects.map((p) => ({ path: `/projects/${p.slug}`, priority: 0.6 })),
+];
+
+const absolute = (languages: Record<string, string>) =>
+  Object.fromEntries(Object.entries(languages).map(([k, v]) => [k, `${siteUrl}${v === "/" ? "" : v}`]));
+
+/** Every page in every language, each listing its translations (hreflang). */
 export default function sitemap(): MetadataRoute.Sitemap {
-  const lastModified = new Date();
-  return [
-    { url: siteUrl, lastModified, changeFrequency: "monthly", priority: 1 },
-    { url: `${siteUrl}/projects`, lastModified, changeFrequency: "monthly", priority: 0.8 },
-    { url: `${siteUrl}/experiences`, lastModified, changeFrequency: "monthly", priority: 0.8 },
-    ...projects.map((p) => ({
-      url: `${siteUrl}/projects/${p.slug}`,
-      lastModified,
-      changeFrequency: "monthly" as const,
-      priority: 0.6,
-    })),
-  ];
+  return pages.flatMap(({ path, priority }) =>
+    locales.map((locale) => {
+      const url = localePath(locale, path);
+      return {
+        url: `${siteUrl}${url === "/" ? "" : url}`,
+        changeFrequency: "monthly" as const,
+        priority,
+        alternates: { languages: absolute(languageAlternates(path)) },
+      };
+    }),
+  );
 }

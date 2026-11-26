@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useRef, useState } from "react";
+import { useI18n } from "@/lib/locale-client";
 import { AnimatePresence, motion } from "motion/react";
 import { ArrowDownIcon, CheckIcon } from "lucide-react";
 import { AGENTS, ARROW_HEADING, ARROW_TIP, type AgentState, type Rect } from "./agents";
@@ -310,6 +311,7 @@ type PillProps = {
 };
 
 export function SwarmPill({ phase, progress, waiting, onSkip }: PillProps) {
+  const { dict } = useI18n();
   const [hidden, setHidden] = useState(false);
   const completed = progress.total > 0 && progress.done >= progress.total;
 
@@ -349,12 +351,12 @@ export function SwarmPill({ phase, progress, waiting, onSkip }: PillProps) {
                 {waiting ? (
                   <>
                     <ArrowDownIcon className="size-3.5 text-mutedForeground animate-bounce" />
-                    Scroll to continue
+                    {dict.swarm.scroll}
                   </>
                 ) : (
                   <>
                     <span className="size-1.5 rounded-full bg-green-500 animate-pulse" />
-                    {AGENTS.length} agents live
+                    {dict.swarm.live(AGENTS.length)}
                   </>
                 )}
                 <span className="tabular-nums text-muted">
@@ -367,13 +369,13 @@ export function SwarmPill({ phase, progress, waiting, onSkip }: PillProps) {
                 onClick={onSkip}
                 className="px-2.5 py-1 rounded-full text-xs font-medium bg-nonHover hover:bg-hover text-background transition-colors cursor-pointer"
               >
-                Skip
+                {dict.swarm.skip}
               </button>
             </>
           ) : (
             <span className="flex items-center gap-1.5 pr-2 text-xs font-medium text-foreground whitespace-nowrap">
               <CheckIcon className="size-3.5 text-green-500" strokeWidth={3} />
-              Page built by {AGENTS.length} agents
+              {dict.swarm.done(AGENTS.length)}
             </span>
           )}
         </motion.div>

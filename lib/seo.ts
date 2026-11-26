@@ -1,19 +1,29 @@
 import type { Metadata } from "next";
 import { profile } from "@/data/profile";
 import { experiences } from "@/data/experiences";
+import { getDictionary } from "@/lib/dictionaries";
+import { defaultLocale, htmlLang, localePath, locales, ogLocale, type Locale } from "@/lib/i18n";
 
 /** Public URL of the site. Override with NEXT_PUBLIC_SITE_URL (e.g. preview deploys). */
 export const siteUrl = (process.env.NEXT_PUBLIC_SITE_URL ?? "https://isaquebock.com").replace(/\/$/, "");
 
 export const siteName = profile.name;
 
-export const siteDescription =
-  "Isaque Böck is a full-stack software engineer building fast, accessible and well-crafted web products with TypeScript, React, Next.js, Vue and Node.js.";
+export const siteDescription = getDictionary(defaultLocale).seo.description;
+
+/** hreflang alternates for a locale-free path: every locale plus x-default. */
+export function languageAlternates(path: string) {
+  return {
+    ...Object.fromEntries(locales.map((l) => [htmlLang[l], localePath(l, path)])),
+    "x-default": localePath(defaultLocale, path),
+  };
+}
 
 export const keywords = [
   "Isaque Böck",
   "Isaque Bock",
   "isaquebock",
+  "Product Engineer",
   "Software Engineer",
   "Full-stack Developer",
   "Frontend Engineer",
@@ -42,26 +52,31 @@ export const sameAs = profile.socials.filter((s) => s.href.startsWith("http")).m
  * instead of merging, so every page builds the full set from here.
  */
 export function pageMetadata({
+  locale = defaultLocale,
   title,
-  description = siteDescription,
+  description = getDictionary(locale).seo.description,
   path = "/",
   type = "website",
 }: {
+  locale?: Locale;
   title?: string;
   description?: string;
+  /** Locale-free path, e.g. "/projects". */
   path?: string;
   type?: "website" | "profile" | "article";
 }): Metadata {
   const fullTitle = title ? `${title} · ${siteName}` : `${siteName} · ${profile.role}`;
+  const url = localePath(locale, path);
   return {
     ...(title ? { title } : {}),
     description,
-    alternates: { canonical: path },
+    alternates: { canonical: url, languages: languageAlternates(path) },
     openGraph: {
       type,
-      url: path,
+      url,
       siteName,
-      locale: "en_US",
+      locale: ogLocale[locale],
+      alternateLocale: locales.filter((l) => l !== locale).map((l) => ogLocale[l]),
       title: fullTitle,
       description,
     },
@@ -75,7 +90,8 @@ export function pageMetadata({
 }
 
 /** schema.org graph for the whole site: the person and the website. */
-export function siteJsonLd() {
+export function siteJsonLd(locale: Locale = defaultLocale) {
+  const description = getDictionary(locale).seo.description;
   const current = experiences[0];
   return {
     "@context": "https://schema.org",
@@ -88,7 +104,7 @@ export function siteJsonLd() {
         url: siteUrl,
         image: `${siteUrl}${profile.avatar}`,
         jobTitle: profile.role,
-        description: siteDescription,
+        description,
         sameAs,
         ...(current && /present/i.test(current.period)
           ? { worksFor: { "@type": "Organization", name: current.company } }
@@ -100,8 +116,8 @@ export function siteJsonLd() {
         "@id": `${siteUrl}/#website`,
         url: siteUrl,
         name: siteName,
-        description: siteDescription,
-        inLanguage: "en",
+        description,
+        inLanguage: locales.map((l) => htmlLang[l]),
         publisher: { "@id": `${siteUrl}/#person` },
       },
     ],

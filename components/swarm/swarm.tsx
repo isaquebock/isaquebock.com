@@ -4,6 +4,7 @@ import { createContext, useCallback, useContext, useEffect, useMemo, useRef, use
 import { AGENTS, type AgentState, type Rect } from "./agents";
 import { SwarmOverlay, SwarmPill } from "./overlay";
 import { sfx } from "@/lib/sound";
+import { createPortal } from "react-dom";
 
 type Status = "hidden" | "building" | "done";
 export type Phase = "idle" | "running" | "done";
@@ -380,10 +381,47 @@ export function SwarmProvider({ children }: { children: React.ReactNode }) {
       </noscript>
       <div ref={wrapRef} className="relative">
         {children}
-        <SwarmOverlay agents={agents} merge={merge} />
+        <TopLayer target={wrapRef}>
+          <SwarmOverlay agents={agents} merge={merge} />
+        </TopLayer>
       </div>
       <SwarmPill phase={phase} progress={progress} waiting={waiting} onSkip={skip} />
     </SwarmContext.Provider>
+  );
+}
+
+/**
+ * Renders the agents in a layer portalled to <body>, laid exactly over
+ * `target` (so their coordinates stay relative to it) but above every other
+ * part of the page: navbar, footer and any stacking context in between.
+ */
+function TopLayer({ target, children }: { target: React.RefObject<HTMLDivElement | null>; children: React.ReactNode }) {
+  const [box, setBox] = useState<{ left: number; top: number; width: number; height: number } | null>(null);
+
+  useEffect(() => {
+    const el = target.current;
+    if (!el) return;
+    const measure = () => {
+      const r = el.getBoundingClientRect();
+      setBox({ left: r.left + window.scrollX, top: r.top + window.scrollY, width: r.width, height: r.height });
+    };
+    measure();
+    const ro = new ResizeObserver(measure);
+    ro.observe(el);
+    ro.observe(document.body);
+    window.addEventListener("resize", measure);
+    return () => {
+      ro.disconnect();
+      window.removeEventListener("resize", measure);
+    };
+  }, [target]);
+
+  if (!box) return null;
+  return createPortal(
+    <div aria-hidden className="pointer-events-none absolute z-[90] overflow-x-clip" style={box}>
+      {children}
+    </div>,
+    document.body,
   );
 }
 

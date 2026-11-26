@@ -6,18 +6,22 @@ import { ButtonLink } from "@/components/button";
 import { Chip } from "@/components/skills";
 import { HLine, Row } from "@/components/frame";
 import { ProjectCover } from "@/components/dither/project-cover";
-import { getProject, projects } from "@/data/projects";
+import { projects } from "@/data/projects";
+import { getProject } from "@/data/localized";
+import { localePath } from "@/lib/i18n";
+import { getI18n } from "@/lib/locale-server";
 import { pageMetadata } from "@/lib/seo";
 
 export function generateStaticParams() {
   return projects.map((p) => ({ slug: p.slug }));
 }
 
-export async function generateMetadata(props: PageProps<"/projects/[slug]">): Promise<Metadata> {
+export async function generateMetadata(props: PageProps<"/[lang]/projects/[slug]">): Promise<Metadata> {
   const { slug } = await props.params;
-  const project = getProject(slug);
+  const { locale } = await getI18n();
+  const project = getProject(locale, slug);
   return project
-    ? pageMetadata({ title: project.title, description: project.description, path: `/projects/${project.slug}`, type: "article" })
+    ? pageMetadata({ locale, title: project.title, description: project.description, path: `/projects/${project.slug}`, type: "article" })
     : {};
 }
 
@@ -38,17 +42,18 @@ function Rich({ text }: { text: string }) {
   );
 }
 
-export default async function ProjectPage(props: PageProps<"/projects/[slug]">) {
+export default async function ProjectPage(props: PageProps<"/[lang]/projects/[slug]">) {
   const { slug } = await props.params;
-  const project = getProject(slug);
+  const { locale, dict } = await getI18n();
+  const project = getProject(locale, slug);
   if (!project) notFound();
 
   return (
     <article>
       <Row className="p-3 flex flex-col gap-3">
         <h1 className="text-[1.75rem] font-semibold tracking-tight text-title">
-          <Link href="/projects" className="text-muted hover:text-mutedForeground transition-colors">
-            Projects
+          <Link href={localePath(locale, "/projects")} className="text-muted hover:text-mutedForeground transition-colors">
+            {dict.projectsPage.title}
           </Link>
           <span className="text-muted">/</span>
           {project.title}
@@ -103,7 +108,7 @@ export default async function ProjectPage(props: PageProps<"/projects/[slug]">) 
 
       {project.stack.length > 0 && (
       <div className="flex flex-col gap-2">
-        <h2 className="text-lg font-medium tracking-tight text-title">Tech stack</h2>
+        <h2 className="text-lg font-medium tracking-tight text-title">{dict.project.stack}</h2>
         <div className="flex gap-[7px] flex-wrap">
           {project.stack.map((s) => (
             <Chip key={s} href={`https://www.google.com/search?q=${encodeURIComponent(s)}`}>

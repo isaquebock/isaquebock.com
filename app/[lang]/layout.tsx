@@ -9,28 +9,34 @@ import { SoundProvider } from "@/components/sound-provider";
 import { Row } from "@/components/frame";
 import { profile } from "@/data/profile";
 import { jsonLdScript, keywords, pageMetadata, siteJsonLd, siteName, siteUrl } from "@/lib/seo";
-import "./globals.css";
+import { htmlLang, locales } from "@/lib/i18n";
+import { getLocale } from "@/lib/locale-server";
+import "../globals.css";
 
 const geist = Geist({ variable: "--font-geist", subsets: ["latin"] });
 
-export const metadata: Metadata = {
-  // Canonical is set per page (home in app/page.tsx), so 404s don't inherit "/".
-  ...withoutCanonical(pageMetadata({ path: "/", type: "profile" })),
-  metadataBase: new URL(siteUrl),
-  title: { default: `${profile.name} · ${profile.role}`, template: `%s · ${profile.name}` },
-  applicationName: siteName,
-  authors: [{ name: profile.name, url: siteUrl }],
-  creator: profile.name,
-  publisher: profile.name,
-  keywords,
-  category: "technology",
-  formatDetection: { email: false, address: false, telephone: false },
-  // Indexing is the default; only widen Google's previews (keeps 404's noindex unchallenged).
-  robots: { googleBot: { "max-image-preview": "large", "max-snippet": -1, "max-video-preview": -1 } },
-};
+export function generateStaticParams() {
+  return locales.map((lang) => ({ lang }));
+}
 
-function withoutCanonical({ alternates: _, ...rest }: Metadata): Metadata {
-  return rest;
+export async function generateMetadata(): Promise<Metadata> {
+  const locale = await getLocale();
+  // Canonical is set per page (home in page.tsx), so 404s don't inherit "/".
+  const { alternates: _, ...base } = pageMetadata({ locale, type: "profile" });
+  return {
+    ...base,
+    metadataBase: new URL(siteUrl),
+    title: { default: `${profile.name} · ${profile.role}`, template: `%s · ${profile.name}` },
+    applicationName: siteName,
+    authors: [{ name: profile.name, url: siteUrl }],
+    creator: profile.name,
+    publisher: profile.name,
+    keywords,
+    category: "technology",
+    formatDetection: { email: false, address: false, telephone: false },
+    // Indexing is the default; only widen Google's previews (keeps 404's noindex unchallenged).
+    robots: { googleBot: { "max-image-preview": "large", "max-snippet": -1, "max-video-preview": -1 } },
+  };
 }
 
 export const viewport: Viewport = {
@@ -41,15 +47,16 @@ export const viewport: Viewport = {
   colorScheme: "light dark",
 };
 
-export default function RootLayout({ children }: LayoutProps<"/">) {
+export default async function RootLayout({ children }: LayoutProps<"/[lang]">) {
+  const locale = await getLocale();
   return (
-    <html lang="en" suppressHydrationWarning>
+    <html lang={htmlLang[locale]} suppressHydrationWarning>
       <body
         className={`${geist.variable} font-sans antialiased min-h-screen flex flex-col`}
       >
         <script
           type="application/ld+json"
-          dangerouslySetInnerHTML={{ __html: jsonLdScript(siteJsonLd()) }}
+          dangerouslySetInnerHTML={{ __html: jsonLdScript(siteJsonLd(locale)) }}
         />
         <ThemeProvider>
           <Navbar />

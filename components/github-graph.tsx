@@ -5,14 +5,16 @@ import { ArrowUpRightIcon } from "lucide-react";
 import { Heatmap } from "@/components/dithercn/heatmap";
 import { profile } from "@/data/profile";
 import { mockContributions } from "@/data/github-mock";
+import { intlLocale } from "@/lib/i18n";
+import { useI18n } from "@/lib/locale-client";
 
 type Data = { total: number; contributions: { date: string; count: number }[] };
-
-const number = new Intl.NumberFormat("en-US", { maximumFractionDigits: 1 });
 
 export function GithubGraph() {
   const [data, setData] = useState<Data | null>(null);
   const [failed, setFailed] = useState(false);
+  const { locale, dict } = useI18n();
+  const number = new Intl.NumberFormat(intlLocale[locale], { maximumFractionDigits: 1 });
 
   useEffect(() => {
     const load: Promise<Data> = profile.githubMock
@@ -32,7 +34,7 @@ export function GithubGraph() {
     <div className="rounded-[14px] border border-border bg-card p-4 sm:p-5">
       <div className="flex items-end justify-between gap-3 pb-4">
         <div className="flex flex-col gap-1">
-          <p className="font-mono text-xs text-muted">contributions in the last year</p>
+          <p className="font-mono text-xs text-muted">{dict.github.title}</p>
           <p className="text-3xl font-medium leading-none text-title tabular-nums">
             {data ? number.format(data.total) : "–"}
           </p>
@@ -48,14 +50,14 @@ export function GithubGraph() {
             <ArrowUpRightIcon className="size-3" />
           </a>
           <p className="text-sm text-mutedForeground">
-            <span className="text-title tabular-nums">{number.format(average)}</span> per day on average
+            <span className="text-title tabular-nums">{number.format(average)}</span> {dict.github.perDay}
           </p>
         </div>
       </div>
       {data ? (
         <Heatmap
           data={data.contributions.map((c) => ({ date: c.date, value: c.count }))}
-          unit={{ one: "contribution", other: "contributions" }}
+          unit={dict.github.unit}
           bloom="low"
         />
       ) : (

@@ -1,6 +1,6 @@
 export const profile = {
   name: "Isaque Böck",
-  role: "Software Engineer",
+  role: "Product Engineer",
   email: "you@example.com",
   avatar: "/images/avatar.png",
   calLink: "https://cal.com/your-username",
@@ -8,8 +8,8 @@ export const profile = {
   /** true: the graph uses sample data (data/github-mock.ts) instead of the GitHub API. */
   githubMock: true,
   bio: [
-    "I'm a full-stack developer who loves building fast, beautiful and easy-to-use products, from the database down to the last pixel of the interface.",
-    "I work with whatever stack the problem calls for and I'm open to new opportunities.",
+    "I'm a product engineer who builds products full cycle: from understanding the problem and shaping the solution to shipping, measuring and improving it.",
+    "What drives me is delivering great experiences that create real value for the people who use them.",
   ],
   socials: [
     { name: "GitHub", href: "https://github.com/isaquebock", icon: "github" },

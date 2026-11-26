@@ -1,12 +1,14 @@
 import { profile } from "@/data/profile";
 import { SocialIcon } from "./brand-icons";
 import { Build } from "./swarm/swarm";
+import { getI18n } from "@/lib/locale-server";
 
-export function Socials() {
+export async function Socials() {
+  const { dict } = await getI18n();
   return (
     <div className="py-4.5 flex flex-col gap-2">
       <p className="font-mono text-xs text-muted">
-        <Build id="socials-label" as="span" className="block w-fit" text="my socials" />
+        <Build id="socials-label" as="span" className="block w-fit" text={dict.hero.socials} />
       </p>
       <div className="flex gap-[7px] items-center flex-wrap">
         {profile.socials.map((s) => (

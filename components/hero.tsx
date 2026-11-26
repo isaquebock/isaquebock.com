@@ -1,5 +1,6 @@
 import { CalendarIcon, SendIcon } from "lucide-react";
-import { profile } from "@/data/profile";
+import { getProfile } from "@/data/localized";
+import { getI18n } from "@/lib/locale-server";
 import { ButtonLink } from "./button";
 import { HLine, Row } from "./frame";
 import { GithubGraph } from "./github-graph";
@@ -8,7 +9,9 @@ import { Build } from "./swarm/swarm";
 import { DitherHorizon } from "./dither/horizon";
 import Image from "next/image";
 
-export function Hero() {
+export async function Hero() {
+  const { locale, dict } = await getI18n();
+  const profile = getProfile(locale);
   return (
     <>
       <Row className="p-3">
@@ -58,12 +61,12 @@ export function Hero() {
         <div className="flex flex-wrap items-center gap-2 pt-4.5">
           <Build id="hero-cta-call" className="w-fit">
             <ButtonLink href={profile.calLink} icon={CalendarIcon}>
-              Book a call
+              {dict.hero.bookCall}
             </ButtonLink>
           </Build>
           <Build id="hero-cta-mail" className="w-fit">
             <ButtonLink href={`mailto:${profile.email}`} icon={SendIcon} variant="secondary">
-              Send email
+              {dict.hero.sendEmail}
             </ButtonLink>
           </Build>
         </div>
