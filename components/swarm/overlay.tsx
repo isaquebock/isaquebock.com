@@ -1,8 +1,8 @@
 "use client";
 
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useId, useRef, useState } from "react";
 import { useI18n } from "@/lib/locale-client";
-import { fillStyle } from "@/lib/dither";
+import { FillPattern, fillStyle } from "@/lib/dither";
 import { AnimatePresence, motion } from "motion/react";
 import { ArrowDownIcon, CheckIcon } from "lucide-react";
 import { AGENTS, ARROW_HEADING, ARROW_TIP, type AgentState, type Rect } from "./agents";
@@ -11,6 +11,8 @@ import { MASCOT_CELLS as AVATAR_CELLS, MASCOT_COLOR as AVATAR_COLOR, MASCOT_GRID
 
 const ease = [0.22, 1, 0.36, 1] as const;
 const box = (r: Rect) => ({ left: r.x, top: r.y, width: r.w, height: r.h });
+
+const ARROW_PATH = "M2 1.5 15.5 8.2 9.2 9.7 6.3 15.8Z";
 
 function Cursor({
   color,
@@ -21,6 +23,7 @@ function Cursor({
   name: string;
   arrowRef?: (el: SVGSVGElement | null) => void;
 }) {
+  const ditherId = `cursor-dither-${useId().replace(/:/g, "")}`;
   return (
     <div className="relative">
       <svg
@@ -33,13 +36,20 @@ function Cursor({
         // Gira em torno da ponta da seta, que é o ponto exato do cursor.
         style={{ transformOrigin: `${ARROW_TIP.x}px ${ARROW_TIP.y}px` }}
       >
-        <path
-          d="M2 1.5 15.5 8.2 9.2 9.7 6.3 15.8Z"
-          fill={color}
-          stroke="white"
-          strokeWidth="1.3"
-          strokeLinejoin="round"
-        />
+        <defs>
+          {/* Dither do motor do dithercn: denso na ponta, dissolvendo até a cauda. */}
+          <FillPattern
+            id={ditherId}
+            fill="gradient"
+            color={color}
+            cell={1.5}
+            floor={0.25}
+            ramp={{ edge: "top", at: 1.5, length: 13 }}
+          />
+        </defs>
+        {/* Base translúcida na cor do agente e o dither por cima (sem contorno). */}
+        <path d={ARROW_PATH} fill={color} fillOpacity={0.35} />
+        <path d={ARROW_PATH} fill={`url(#${ditherId})`} />
       </svg>
       <span
         className="absolute left-3.5 top-4 whitespace-nowrap px-2 py-[1px] rounded-full font-mono text-[10px] font-medium text-white shadow-sm"
@@ -222,6 +232,7 @@ function MorphAvatar({
           />
         );
       })}
+      <ClaudeHint merge={merge} />
       <motion.span
         key="claude-label"
         className="absolute left-0 top-0 -translate-x-1/2 px-2 py-[1px] rounded-full font-mono text-[10px] font-medium text-black whitespace-nowrap"
@@ -233,6 +244,54 @@ function MorphAvatar({
         Claude
       </motion.span>
     </>
+  );
+}
+
+const HINT_DELAY = 3.75; // s: 0.75s for Claude to form, then 3s more
+const HINT_KEY = "claude-hint-last";
+
+/** Index of the tip shown last (this tab), or -1 if none was seen yet. */
+const lastHint = () => {
+  if (typeof window === "undefined") return -1;
+  const v = Number(sessionStorage.getItem(HINT_KEY));
+  return Number.isInteger(v) && sessionStorage.getItem(HINT_KEY) !== null ? v : -1;
+};
+
+/**
+ * Speech bubble beside the resting Claude. Each time Claude forms it shows the
+ * tip that wasn't seen last: the banner game, then the terminal, then the game...
+ */
+function ClaudeHint({ merge }: { merge: { x: number; y: number } }) {
+  const { dict } = useI18n();
+  const hints = dict.swarm.hints;
+  // Reading storage is safe to repeat (StrictMode runs initializers twice).
+  const [index] = useState(() => (lastHint() + 1) % hints.length);
+
+  // Only count a tip as seen once the bubble has actually appeared.
+  useEffect(() => {
+    const id = window.setTimeout(() => sessionStorage.setItem(HINT_KEY, String(index)), HINT_DELAY * 1000);
+    return () => window.clearTimeout(id);
+  }, [index]);
+
+  // Open toward the side with more room, so the bubble isn't clipped at the screen edge.
+  const toLeft = typeof window !== "undefined" && merge.x > window.innerWidth - 280;
+  return (
+    <motion.span
+      key="claude-hint"
+      role="status"
+      className={`absolute top-0 left-0 w-max max-w-[240px] rounded-[12px] border border-border bg-background px-2.5 py-1.5 font-mono text-[11px] leading-snug text-foreground shadow-lg ${
+        toLeft ? "-translate-x-full" : ""
+      }`}
+      style={{
+        left: toLeft ? merge.x - AVATAR_SIZE / 2 - 10 : merge.x + AVATAR_SIZE / 2 + 10,
+        top: merge.y - AVATAR_SIZE / 2 - 6,
+      }}
+      initial={{ opacity: 0, y: 4, filter: "blur(4px)" }}
+      animate={{ opacity: 1, y: 0, filter: "blur(0px)", transition: { delay: HINT_DELAY, duration: 0.35, ease } }}
+      exit={{ opacity: 0, filter: "blur(4px)", transition: { duration: 0.15 } }}
+    >
+      {hints[index]}
+    </motion.span>
   );
 }
 

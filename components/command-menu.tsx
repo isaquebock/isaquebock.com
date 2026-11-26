@@ -6,7 +6,8 @@ import { useRouter } from "next/navigation";
 import { useTheme } from "next-themes";
 import { useThemeTransition } from "@/lib/theme-transition";
 import { Command } from "cmdk";
-import { BookmarkIcon, BriefcaseIcon, PenLineIcon, FolderIcon, HomeIcon, LanguagesIcon, MoonIcon, SunIcon } from "lucide-react";
+import { BookmarkIcon, BriefcaseIcon, PenLineIcon, FolderIcon, HomeIcon, LanguagesIcon, MoonIcon, SunIcon, TerminalIcon } from "lucide-react";
+import { Terminal } from "./terminal";
 import { profile } from "@/data/profile";
 import { SocialIcon } from "./brand-icons";
 import { localePath } from "@/lib/i18n";
@@ -23,6 +24,8 @@ const group =
 
 export function CommandMenu() {
   const [open, setOpen] = useState(false);
+  const [search, setSearch] = useState("");
+  const [terminal, setTerminal] = useState(false);
   const firstRender = useRef(true);
   const selected = useRef(false);
 
@@ -60,6 +63,15 @@ export function CommandMenu() {
     };
   }, []);
 
+  const changeOpen = (next: boolean) => {
+    setOpen(next);
+    if (!next) {
+      // Ao fechar, a busca volta ao normal na próxima vez.
+      setTerminal(false);
+      setSearch("");
+    }
+  };
+
   const run = useCallback((fn: () => void) => {
     selected.current = true;
     sfx("select");
@@ -70,16 +82,42 @@ export function CommandMenu() {
   return (
     <Command.Dialog
       open={open}
-      onOpenChange={setOpen}
+      onOpenChange={changeOpen}
+      shouldFilter={!terminal}
       label={dict.command.label}
       overlayClassName="fixed inset-0 z-[100] bg-black/30 backdrop-blur-xs"
       contentClassName="fixed left-1/2 top-[18%] z-[101] w-[calc(100%-2rem)] max-w-[520px] -translate-x-1/2 rounded-[14px] border border-border bg-card shadow-2xl overflow-hidden"
     >
+      {terminal ? (
+        <Terminal
+          onExit={() => {
+            setTerminal(false);
+            setSearch("");
+          }}
+        />
+      ) : (
+      <>
       <Command.Input
+        value={search}
+        onValueChange={setSearch}
         placeholder={dict.command.placeholder}
         className="w-full px-4 py-3 text-sm bg-transparent border-b border-border outline-none text-foreground placeholder:text-muted"
       />
       <Command.List className="max-h-[340px] overflow-y-auto p-1.5">
+        {/* Easter egg: só aparece quando a busca começa com "/". */}
+        {search.startsWith("/") && (
+          <Command.Item
+            value="/terminal"
+            className={item}
+            onSelect={() => {
+              sfx("open", { emphasis: "subtle" });
+              setTerminal(true);
+            }}
+          >
+            <TerminalIcon className="size-4 text-muted" /> /terminal
+            <span className="ml-auto text-xs text-muted">{dict.command.terminal}</span>
+          </Command.Item>
+        )}
         <Command.Empty className="py-6 text-center text-sm text-muted">{dict.command.empty}</Command.Empty>
 
         <Command.Group heading={dict.command.pages} className={group}>
@@ -141,6 +179,8 @@ export function CommandMenu() {
           </Command.Item>
         </Command.Group>
       </Command.List>
+      </>
+      )}
     </Command.Dialog>
   );
 }
