@@ -94,6 +94,7 @@ export function CommandMenu() {
             setTerminal(false);
             setSearch("");
           }}
+          onClose={() => changeOpen(false)}
         />
       ) : (
       <>

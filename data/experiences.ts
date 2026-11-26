@@ -37,11 +37,10 @@ export const experiences: Experience[] = [
     bullets: [
       "Frontend: built and maintained interfaces with Astro, Svelte, Vue.js, TypeScript and Tailwind CSS, with strong focus on componentization, interface architecture and UX/UI.",
       "Managed application state with stores, signals and context APIs, keeping complex screens consistent and easy to evolve.",
-      "Backend: created, maintained and optimized REST APIs with Node.js and Java, integrating with internal systems and following good architecture practices.",
       "DevOps & infra: worked with Docker, Kubernetes, CI/CD pipelines and Unix/Linux environments to keep applications scalable and observable.",
       "Quality: wrote automated unit, integration and end-to-end tests with Jest and Playwright, raising confidence in every release.",
     ],
-    stack: ["Astro", "Svelte", "Vue.js", "Node.js", "Java", "Docker", "Kubernetes", "Jest", "Playwright"],
+    stack: ["Astro", "Svelte", "Vue.js", "Docker", "Kubernetes", "Jest", "Playwright"],
   },
   {
     company: "Accountfy",

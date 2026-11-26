@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useMemo, useRef, useState } from "react";
+import { XIcon } from "lucide-react";
 import { profile } from "@/data/profile";
 import { getExperiences } from "@/data/localized";
 import { useI18n } from "@/lib/locale-client";
@@ -19,7 +20,7 @@ type Line = { kind: "input" | "output" | "error"; text: string; cwd?: string };
 const prompt = (cwd: string) => `${profile.githubUsername}@site ${cwd} %`;
 const COMMANDS = ["help", "whoami", "ls", "cd", "cat", "pwd", "play", "clear", "exit"];
 
-export function Terminal({ onExit }: { onExit: () => void }) {
+export function Terminal({ onExit, onClose }: { onExit: () => void; onClose: () => void }) {
   const { locale, dict } = useI18n();
   const t = dict.terminal;
   const [lines, setLines] = useState<Line[]>([{ kind: "output", text: t.welcome }]);
@@ -196,6 +197,23 @@ export function Terminal({ onExit }: { onExit: () => void }) {
 
   return (
     <div onClick={() => !playing && inputRef.current?.focus()}>
+      {/* Barra de título, como numa janela de terminal: o ✕ fecha a busca. */}
+      <div className="flex items-center justify-between border-b border-border px-3.5 py-2">
+        <span className="font-mono text-[11px] text-muted">{profile.githubUsername}@site — terminal</span>
+        <button
+          type="button"
+          data-cuelume-tap=""
+          onClick={(e) => {
+            e.stopPropagation();
+            onClose();
+          }}
+          aria-label={t.close}
+          title={`${t.close} (Esc)`}
+          className="grid size-6 place-items-center rounded-full text-muted hover:bg-mutedBackground hover:text-foreground transition-colors cursor-pointer"
+        >
+          <XIcon className="size-3.5" />
+        </button>
+      </div>
       <div ref={scrollRef} className="h-[min(380px,60vh)] overflow-y-auto px-3.5 py-3 font-mono text-[12.5px] leading-relaxed">
         {lines.map((line, i) =>
           line.kind === "input" ? (

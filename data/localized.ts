@@ -42,7 +42,6 @@ const pt = {
       bullets: [
         "Frontend: construí e mantive interfaces com Astro, Svelte, Vue.js, TypeScript e Tailwind CSS, com foco em componentização, arquitetura de interface e UX/UI.",
         "Gerenciei o estado das aplicações com stores, signals e context APIs, mantendo telas complexas consistentes e fáceis de evoluir.",
-        "Backend: criei, mantive e otimizei APIs REST com Node.js e Java, integrando com sistemas internos e seguindo boas práticas de arquitetura.",
         "DevOps e infra: trabalhei com Docker, Kubernetes, pipelines de CI/CD e ambientes Unix/Linux para manter as aplicações escaláveis e observáveis.",
         "Qualidade: escrevi testes automatizados unitários, de integração e end-to-end com Jest e Playwright, aumentando a confiança em cada release.",
       ],

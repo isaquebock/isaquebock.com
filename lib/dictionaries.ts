@@ -83,6 +83,7 @@ const en = {
     terminal: "Open terminal",
   },
   terminal: {
+    close: "Close terminal",
     welcome: "Welcome. Type help to see the commands.",
     help: [
       ["help [command]", "show this help, or how a command works"],
@@ -217,6 +218,7 @@ const ptBr: Dictionary = {
     terminal: "Abrir terminal",
   },
   terminal: {
+    close: "Fechar terminal",
     welcome: "Bem-vindo. Digite help para ver os comandos.",
     help: [
       ["help [comando]", "mostra esta ajuda, ou como um comando funciona"],

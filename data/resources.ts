@@ -80,9 +80,12 @@ export const resources: ResourceCategory[] = [
         note: { en: "A community registry of React components", "pt-br": "Um registro comunitário de componentes React" },
       },
       {
-        name: "Origin UI",
-        href: "https://originui.com",
-        note: { en: "Polished components built on Tailwind", "pt-br": "Componentes bem acabados feitos com Tailwind" },
+        name: "coss ui",
+        href: "https://coss.com/ui",
+        note: {
+          en: "Accessible React components from Cal.com, built on Base UI and Tailwind",
+          "pt-br": "Componentes React acessíveis do Cal.com, feitos com Base UI e Tailwind",
+        },
       },
     ],
   },
