@@ -26,6 +26,7 @@ const pt = {
   experiences: {
     Azion: {
       period: "jul 2025 – atual",
+      location: "Porto Alegre, Brasil",
       bullets: [
         "Contribuo para a criação do Console, do site, da documentação e dos projetos de marketing engineering da Azion, da primeira implementação até a produção.",
         "Construo interfaces para pessoas e agentes de IA com Astro, Nuxt, Vue.js e TypeScript, estilizadas com Tailwind CSS.",
@@ -37,6 +38,7 @@ const pt = {
     },
     enjoei: {
       period: "ago 2024 – jul 2025",
+      location: "Remoto",
       bullets: [
         "Frontend: construí e mantive interfaces com Astro, Svelte, Vue.js, TypeScript e Tailwind CSS, com foco em componentização, arquitetura de interface e UX/UI.",
         "Gerenciei o estado das aplicações com stores, signals e context APIs, mantendo telas complexas consistentes e fáceis de evoluir.",
@@ -47,6 +49,7 @@ const pt = {
     },
     Accountfy: {
       period: "nov 2023 – ago 2024",
+      location: "Remoto",
       bullets: [
         "Desenvolvi o módulo de relatórios e dashboards da plataforma, da apresentação dos dados às interações que os usuários usam para ler seus números.",
         "Construí telas com muitos dados em Angular com TypeScript, JavaScript e SCSS, com foco em clareza, consistência e responsividade.",
@@ -56,6 +59,7 @@ const pt = {
     },
     Neon: {
       period: "jul 2022 – out 2023",
+      location: "Remoto",
       bullets: [
         "Desenvolvi e testei os sistemas de gestão do Neon, contribuindo com sua construção, evolução e manutenção no dia a dia em produção.",
         "Construí interfaces em Angular com TypeScript, JavaScript, SCSS e Tailwind CSS, organizadas em componentes reutilizáveis.",

@@ -17,6 +17,7 @@ export const experiences: Experience[] = [
     role: "Software Engineer",
     logo: "/images/experience/azion.jpg",
     period: "Jul 2025 – Present",
+    location: "Porto Alegre, Brazil",
     bullets: [
       "Contribute to building Azion's Console, website, documentation and marketing engineering projects, from first implementation to production.",
       "Build interfaces for people and AI agents with Astro, Nuxt, Vue.js and TypeScript, styled with Tailwind CSS.",
@@ -32,6 +33,7 @@ export const experiences: Experience[] = [
     role: "Software Engineer",
     logo: "/images/experience/enjoei.jpg",
     period: "Aug 2024 – Jul 2025",
+    location: "Remote",
     bullets: [
       "Frontend: built and maintained interfaces with Astro, Svelte, Vue.js, TypeScript and Tailwind CSS, with strong focus on componentization, interface architecture and UX/UI.",
       "Managed application state with stores, signals and context APIs, keeping complex screens consistent and easy to evolve.",
@@ -46,6 +48,7 @@ export const experiences: Experience[] = [
     role: "Software Engineer",
     logo: "/images/experience/accountfy.jpg",
     period: "Nov 2023 – Aug 2024",
+    location: "Remote",
     bullets: [
       "Developed the platform's reports and dashboards module, from data presentation to the interactions users rely on to read their numbers.",
       "Built data-heavy screens in Angular with TypeScript, JavaScript and SCSS, focused on clarity, consistency and responsiveness.",
@@ -59,6 +62,7 @@ export const experiences: Experience[] = [
     role: "Software Engineer",
     logo: "/images/experience/neon.jpg",
     period: "Jul 2022 – Oct 2023",
+    location: "Remote",
     bullets: [
       "Developed and tested Neon's management systems, contributing to their construction, evolution and day-to-day maintenance in production.",
       "Built interfaces in Angular with TypeScript, JavaScript, SCSS and Tailwind CSS, organized into reusable components.",
