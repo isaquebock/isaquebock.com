@@ -22,9 +22,10 @@ export function generateStaticParams() {
 export async function generateMetadata(): Promise<Metadata> {
   const locale = await getLocale();
   // Canonical is set per page (home in page.tsx), so 404s don't inherit "/".
-  const { alternates: _, ...base } = pageMetadata({ locale, type: "profile" });
+  const base = pageMetadata({ locale, type: "profile" });
   return {
     ...base,
+    alternates: undefined,
     metadataBase: new URL(siteUrl),
     title: { default: `${profile.name} · ${profile.role}`, template: `%s · ${profile.name}` },
     applicationName: siteName,

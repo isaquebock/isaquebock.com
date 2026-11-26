@@ -7,6 +7,14 @@ const en = {
   theme: { toggle: "Toggle theme" },
   sound: { mute: "Mute sounds", unmute: "Unmute sounds" },
   hero: { bookCall: "Book a call", sendEmail: "Send email", socials: "my socials" },
+  game: {
+    play: "Play game",
+    again: "Play again",
+    howTo: "Space, ↑ or click to jump",
+    over: "Game over",
+    best: "Best",
+    exit: "Exit game",
+  },
   github: {
     title: "contributions in the last year",
     perDay: "per day on average",
@@ -95,6 +103,14 @@ const ptBr: Dictionary = {
   theme: { toggle: "Alternar tema" },
   sound: { mute: "Desligar sons", unmute: "Ligar sons" },
   hero: { bookCall: "Agendar conversa", sendEmail: "Enviar email", socials: "minhas redes" },
+  game: {
+    play: "Jogar",
+    again: "Jogar de novo",
+    howTo: "Espaço, ↑ ou clique para pular",
+    over: "Fim de jogo",
+    best: "Recorde",
+    exit: "Sair do jogo",
+  },
   github: {
     title: "contribuições no último ano",
     perDay: "por dia em média",

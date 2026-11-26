@@ -6,6 +6,7 @@ import { AnimatePresence, motion } from "motion/react";
 import { ArrowDownIcon, CheckIcon } from "lucide-react";
 import { AGENTS, ARROW_HEADING, ARROW_TIP, type AgentState, type Rect } from "./agents";
 import type { Phase } from "./swarm";
+import { MASCOT_CELLS as AVATAR_CELLS, MASCOT_COLOR as AVATAR_COLOR, MASCOT_GRID as AVATAR_GRID } from "@/lib/claude-mascot";
 
 const ease = [0.22, 1, 0.36, 1] as const;
 const box = (r: Rect) => ({ left: r.x, top: r.y, width: r.w, height: r.h });
@@ -139,30 +140,7 @@ function useAimAtPointer(following: boolean) {
   };
 }
 
-const CLAUDE_ORANGE = "#D97757";
 
-/**
- * O avatar do Claude Code decomposto em células. O desenho original (viewBox 24×24)
- * segue uma grade de 1,5 unidade, então 16×16 células reproduzem a forma exata.
- */
-const AVATAR_GRID = 16;
-const AVATAR_CELLS: { col: number; row: number }[] = (() => {
-  const inside = (x: number, y: number) => {
-    const between = (v: number, a: number, b: number) => v >= a && v <= b;
-    const eye = between(y, 8.102, 10.949) && (between(x, 6, 7.488) || between(x, 16.51, 18));
-    const body = between(x, 3, 21) && between(y, 5, 17.079) && !eye;
-    const arms = between(y, 10.95, 14.05) && (between(x, 0, 3) || between(x, 21, 24));
-    const legs =
-      between(y, 17.079, 20) &&
-      [4.487, 7.488, 15, 18].some((left) => between(x, left, left + 1.513));
-    return body || arms || legs;
-  };
-  const cells: { col: number; row: number }[] = [];
-  for (let row = 0; row < AVATAR_GRID; row++)
-    for (let col = 0; col < AVATAR_GRID; col++)
-      if (inside(0.75 + col * 1.5, 0.75 + row * 1.5)) cells.push({ col, row });
-  return cells;
-})();
 const AVATAR_SIZE = 48; // 3px por célula: posições inteiras, sem frestas
 const CELL = AVATAR_SIZE / AVATAR_GRID;
 
@@ -205,7 +183,7 @@ function MorphAvatar({
         );
         const sx = (src?.s.x ?? tx) + (jitter(i) - 0.5) * 14;
         const sy = (src?.s.y ?? ty) + (jitter(i + 99) - 0.5) * 14;
-        const color = src?.a.color ?? CLAUDE_ORANGE;
+        const color = src?.a.color ?? AVATAR_COLOR;
         // Forma de cima para baixo, com variação: parece crescer, não aparecer.
         const delay = cell.row * 0.028 + jitter(i + 7) * 0.12;
         return (
@@ -219,7 +197,7 @@ function MorphAvatar({
               y: ty,
               opacity: 1,
               scale: 1,
-              backgroundColor: CLAUDE_ORANGE,
+              backgroundColor: AVATAR_COLOR,
               transition: {
                 x: { type: "spring", stiffness: 140, damping: 17, mass: 0.9, delay },
                 y: { type: "spring", stiffness: 140, damping: 17, mass: 0.9, delay },
@@ -246,7 +224,7 @@ function MorphAvatar({
       <motion.span
         key="claude-label"
         className="absolute left-0 top-0 -translate-x-1/2 px-1.5 py-[1px] rounded-[5px] font-mono text-[10px] font-medium text-white whitespace-nowrap"
-        style={{ left: merge.x, top: merge.y + AVATAR_SIZE / 2 + 4, background: CLAUDE_ORANGE }}
+        style={{ left: merge.x, top: merge.y + AVATAR_SIZE / 2 + 4, background: AVATAR_COLOR }}
         initial={{ opacity: 0, y: -4 }}
         animate={{ opacity: 1, y: 0, transition: { delay: 0.75, duration: 0.3 } }}
         exit={{ opacity: 0, transition: { duration: 0.12 } }}
@@ -268,7 +246,7 @@ export function SwarmOverlay({
   const arrowRef = useAimAtPointer(following);
 
   return (
-    <div aria-hidden className="pointer-events-none absolute inset-0 z-40">
+    <div aria-hidden data-swarm-overlay="" className="pointer-events-none absolute inset-0 z-40">
       <AnimatePresence>{merge && <MorphAvatar key="morph" merge={merge} agents={agents} />}</AnimatePresence>
       {AGENTS.map((a, i) => {
         const s = agents[a.id];

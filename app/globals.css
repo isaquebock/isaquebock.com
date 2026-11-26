@@ -270,3 +270,11 @@
     scrollbar-color: var(--border-color) transparent;
   }
 }
+
+/* Enquanto o jogo do banner está aberto, os cursores do enxame somem. */
+[data-swarm-overlay] {
+  transition: opacity 0.25s ease-out;
+}
+.game-active [data-swarm-overlay] {
+  opacity: 0;
+}

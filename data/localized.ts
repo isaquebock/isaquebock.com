@@ -27,7 +27,8 @@ const pt = {
     Azion: {
       period: "jul 2025 – atual",
       bullets: [
-        "Construo e evoluo interfaces com Astro, Svelte, Vue.js e TypeScript, estilizadas com Tailwind CSS, da primeira implementação até a produção.",
+        "Contribuo para a criação do Console, do site, da documentação e dos projetos de marketing engineering da Azion, da primeira implementação até a produção.",
+        "Construo interfaces para pessoas e agentes de IA com Astro, Nuxt, Vue.js e TypeScript, estilizadas com Tailwind CSS.",
         "Desenho componentes reutilizáveis e a arquitetura de interface por trás deles, para que novas telas sejam montadas com peças consistentes e bem testadas.",
         "Cuido do gerenciamento de estado de fluxos complexos com stores e signals, mantendo o fluxo de dados previsível conforme as features crescem.",
         "Trabalho junto com design nos detalhes de UX/UI, com atenção a performance, acessibilidade, responsividade e usabilidade.",

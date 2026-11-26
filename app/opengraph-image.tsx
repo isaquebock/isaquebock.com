@@ -56,7 +56,6 @@ export default async function OpengraphImage() {
               background: "#000",
             }}
           >
-            {/* eslint-disable-next-line @next/next/no-img-element */}
             <img src={avatarSrc} width={156} height={156} style={{ borderRadius: 20, objectFit: "cover" }} alt="" />
           </div>
           <div style={{ display: "flex", flexDirection: "column", gap: 12 }}>

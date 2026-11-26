@@ -6,7 +6,7 @@ import { HLine, Row } from "./frame";
 import { GithubGraph } from "./github-graph";
 import { Socials } from "./socials";
 import { Build } from "./swarm/swarm";
-import { DitherHorizon } from "./dither/horizon";
+import { HeroBanner } from "./game/hero-banner";
 import Image from "next/image";
 
 export async function Hero() {
@@ -16,9 +16,7 @@ export async function Hero() {
     <>
       <Row className="p-3">
         <Build id="hero-band">
-          <div className="relative h-[140px] sm:h-[220px] overflow-hidden rounded-[10px]">
-            <DitherHorizon className="absolute inset-0" />
-          </div>
+          <HeroBanner labels={dict.game} />
         </Build>
       </Row>
       <HLine />
@@ -32,7 +30,7 @@ export async function Hero() {
                 alt={profile.name}
                 width={176}
                 height={176}
-                priority
+                preload
                 className="size-[88px] rounded-[10px] object-cover"
               />
             </div>

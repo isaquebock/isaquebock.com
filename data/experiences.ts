@@ -18,13 +18,14 @@ export const experiences: Experience[] = [
     logo: "/images/experience/azion.jpg",
     period: "Jul 2025 – Present",
     bullets: [
-      "Build and evolve user-facing interfaces with Astro, Svelte, Vue.js and TypeScript, styled with Tailwind CSS, from first implementation to production.",
+      "Contribute to building Azion's Console, website, documentation and marketing engineering projects, from first implementation to production.",
+      "Build interfaces for people and AI agents with Astro, Nuxt, Vue.js and TypeScript, styled with Tailwind CSS.",
       "Design reusable components and the interface architecture behind them, so new screens are assembled from consistent, well-tested building blocks.",
       "Own state management for complex flows using stores and signals, keeping data flow predictable as features grow.",
       "Work closely with design on UX/UI details, with attention to performance, accessibility, responsiveness and overall usability.",
       "Collaborate in a multidisciplinary team in a context close to infrastructure and scalability, contributing to technical decisions and the evolution of the product.",
     ],
-    stack: ["Astro", "TypeScript", "Svelte", "Vue.js", "Tailwind CSS"],
+    stack: ["Astro", "Nuxt", "Vue.js", "TypeScript", "Tailwind CSS"],
   },
   {
     company: "enjoei",
