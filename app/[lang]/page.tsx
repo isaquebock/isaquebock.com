@@ -11,7 +11,7 @@ import { Now } from "@/components/now";
 import { Build, SwarmProvider } from "@/components/swarm/swarm";
 import { getExperiences, getProjects } from "@/data/localized";
 import { getI18n, getLocale } from "@/lib/locale-server";
-import { pageMetadata } from "@/lib/seo";
+import { JsonLd, pageMetadata, profilePageJsonLd } from "@/lib/seo";
 import { skills } from "@/data/skills";
 
 export async function generateMetadata(): Promise<Metadata> {
@@ -27,6 +27,7 @@ export default async function Home() {
 
   return (
     <SwarmProvider>
+      <JsonLd data={profilePageJsonLd(locale)} />
       <Hero />
 
       <Section id="projects" title={dict.sections.projects} aside={dict.sections.projectsCount(projects.length)} viewAllHref="/projects">

@@ -9,6 +9,8 @@ export type Project = {
   highlights: string[];
   links: { github?: string; website?: string };
   featured?: boolean;
+  /** Not launched yet: listed on the site but kept out of search results and the sitemap. */
+  draft?: boolean;
 };
 
 export const projects: Project[] = [
@@ -22,6 +24,7 @@ export const projects: Project[] = [
     highlights: [],
     links: {},
     featured: true,
+    draft: true,
   },
   {
     slug: "stealth-two",
@@ -33,6 +36,7 @@ export const projects: Project[] = [
     highlights: [],
     links: {},
     featured: true,
+    draft: true,
   },
 ];
 

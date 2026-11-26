@@ -124,5 +124,60 @@ export function siteJsonLd(locale: Locale = defaultLocale) {
   };
 }
 
+const abs = (path: string) => `${siteUrl}${path === "/" ? "" : path}`;
+
+/** ProfilePage for the home page: tells search engines the page is about the person. */
+export function profilePageJsonLd(locale: Locale) {
+  return {
+    "@context": "https://schema.org",
+    "@type": "ProfilePage",
+    "@id": `${abs(localePath(locale, "/"))}#profile`,
+    url: abs(localePath(locale, "/")),
+    inLanguage: htmlLang[locale],
+    isPartOf: { "@id": `${siteUrl}/#website` },
+    mainEntity: { "@id": `${siteUrl}/#person` },
+  };
+}
+
+/** BreadcrumbList for an inner page; `trail` is [name, locale-free path] after Home. */
+export function breadcrumbJsonLd(locale: Locale, trail: [string, string][]) {
+  const items: [string, string][] = [[getDictionary(locale).nav.home, "/"], ...trail];
+  return {
+    "@context": "https://schema.org",
+    "@type": "BreadcrumbList",
+    itemListElement: items.map(([name, path], i) => ({
+      "@type": "ListItem",
+      position: i + 1,
+      name,
+      item: abs(localePath(locale, path)),
+    })),
+  };
+}
+
+/** CreativeWork for a project page, credited to the person. */
+export function projectJsonLd(
+  locale: Locale,
+  project: { slug: string; title: string; description: string; stack: string[]; links: { website?: string; github?: string } },
+) {
+  return {
+    "@context": "https://schema.org",
+    "@type": "CreativeWork",
+    name: project.title,
+    description: project.description,
+    url: abs(localePath(locale, `/projects/${project.slug}`)),
+    inLanguage: htmlLang[locale],
+    creator: { "@id": `${siteUrl}/#person` },
+    ...(project.stack.length ? { keywords: project.stack.join(", ") } : {}),
+    ...(project.links.website || project.links.github
+      ? { sameAs: [project.links.website, project.links.github].filter(Boolean) }
+      : {}),
+  };
+}
+
+/** Renders one or more JSON-LD objects as <script> tags. */
+export function JsonLd({ data }: { data: unknown }) {
+  return <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: jsonLdScript(data) }} />;
+}
+
 /** Serialises JSON-LD for a <script> tag, escaping `<` so it can't close the tag. */
 export const jsonLdScript = (data: unknown) => JSON.stringify(data).replace(/</g, "\\u003c");

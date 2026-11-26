@@ -10,7 +10,7 @@ import { projects } from "@/data/projects";
 import { getProject } from "@/data/localized";
 import { localePath } from "@/lib/i18n";
 import { getI18n } from "@/lib/locale-server";
-import { pageMetadata } from "@/lib/seo";
+import { JsonLd, breadcrumbJsonLd, pageMetadata, projectJsonLd } from "@/lib/seo";
 
 export function generateStaticParams() {
   return projects.map((p) => ({ slug: p.slug }));
@@ -20,9 +20,12 @@ export async function generateMetadata(props: PageProps<"/[lang]/projects/[slug]
   const { slug } = await props.params;
   const { locale } = await getI18n();
   const project = getProject(locale, slug);
-  return project
-    ? pageMetadata({ locale, title: project.title, description: project.description, path: `/projects/${project.slug}`, type: "article" })
-    : {};
+  if (!project) return {};
+  return {
+    ...pageMetadata({ locale, title: project.title, description: project.description, path: `/projects/${project.slug}`, type: "article" }),
+    // Unlaunched projects stay out of search results until they have real content.
+    ...(project.draft ? { robots: { index: false, follow: true } } : {}),
+  };
 }
 
 /** Turns **bold** into <strong>. */
@@ -50,6 +53,15 @@ export default async function ProjectPage(props: PageProps<"/[lang]/projects/[sl
 
   return (
     <article>
+      <JsonLd
+        data={[
+          breadcrumbJsonLd(locale, [
+            [dict.projectsPage.title, "/projects"],
+            [project.title, `/projects/${project.slug}`],
+          ]),
+          ...(project.draft ? [] : [projectJsonLd(locale, project)]),
+        ]}
+      />
       <Row className="p-3 flex flex-col gap-3">
         <h1 className="text-[1.75rem] font-semibold tracking-tight text-title">
           <Link href={localePath(locale, "/projects")} className="text-muted hover:text-mutedForeground transition-colors">

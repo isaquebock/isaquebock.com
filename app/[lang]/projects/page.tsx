@@ -3,7 +3,7 @@ import { ProjectCard } from "@/components/project-card";
 import { GithubIcon } from "@/components/brand-icons";
 import { DashedGrid, HLine, Row } from "@/components/frame";
 import { profile } from "@/data/profile";
-import { pageMetadata } from "@/lib/seo";
+import { JsonLd, breadcrumbJsonLd, pageMetadata } from "@/lib/seo";
 import { getProjects } from "@/data/localized";
 import { getI18n } from "@/lib/locale-server";
 
@@ -22,6 +22,7 @@ export default async function ProjectsPage() {
   const projects = getProjects(locale);
   return (
     <>
+      <JsonLd data={breadcrumbJsonLd(locale, [[dict.projectsPage.title, "/projects"]])} />
       <Row className="p-3">
         <h1 className="text-[1.75rem] font-semibold tracking-tight text-title">{dict.projectsPage.title}</h1>
         <p className="text-sm text-mutedForeground">{dict.projectsPage.subtitle}</p>

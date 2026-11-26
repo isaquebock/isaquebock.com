@@ -34,6 +34,11 @@ export async function generateMetadata(): Promise<Metadata> {
     keywords,
     category: "technology",
     formatDetection: { email: false, address: false, telephone: false },
+    // Search Console / Bing Webmaster ownership, set in the deploy environment.
+    verification: {
+      ...(process.env.GOOGLE_SITE_VERIFICATION ? { google: process.env.GOOGLE_SITE_VERIFICATION } : {}),
+      ...(process.env.BING_SITE_VERIFICATION ? { other: { "msvalidate.01": process.env.BING_SITE_VERIFICATION } } : {}),
+    },
     // Indexing is the default; only widen Google's previews (keeps 404's noindex unchallenged).
     robots: { googleBot: { "max-image-preview": "large", "max-snippet": -1, "max-video-preview": -1 } },
   };

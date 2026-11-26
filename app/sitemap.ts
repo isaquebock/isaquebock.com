@@ -1,5 +1,6 @@
 import type { MetadataRoute } from "next";
 import { projects } from "@/data/projects";
+import { now } from "@/data/now";
 import { localePath, locales } from "@/lib/i18n";
 import { languageAlternates, siteUrl } from "@/lib/seo";
 
@@ -7,7 +8,7 @@ const pages = [
   { path: "/", priority: 1 },
   { path: "/projects", priority: 0.8 },
   { path: "/experiences", priority: 0.8 },
-  ...projects.map((p) => ({ path: `/projects/${p.slug}`, priority: 0.6 })),
+  ...projects.filter((p) => !p.draft).map((p) => ({ path: `/projects/${p.slug}`, priority: 0.6 })),
 ];
 
 const absolute = (languages: Record<string, string>) =>
@@ -20,6 +21,8 @@ export default function sitemap(): MetadataRoute.Sitemap {
       const url = localePath(locale, path);
       return {
         url: `${siteUrl}${url === "/" ? "" : url}`,
+        // The "Now" date is the most reliable signal of when the content last changed.
+        lastModified: now.updated,
         changeFrequency: "monthly" as const,
         priority,
         alternates: { languages: absolute(languageAlternates(path)) },

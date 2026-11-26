@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 import { ExperienceItem } from "@/components/experience-item";
 import { DashedList, HLine, Row } from "@/components/frame";
 import { profile } from "@/data/profile";
-import { pageMetadata } from "@/lib/seo";
+import { JsonLd, breadcrumbJsonLd, pageMetadata } from "@/lib/seo";
 import { getExperiences } from "@/data/localized";
 import { getI18n } from "@/lib/locale-server";
 
@@ -22,6 +22,7 @@ export default async function ExperiencesPage() {
   const experiences = getExperiences(locale);
   return (
     <>
+      <JsonLd data={breadcrumbJsonLd(locale, [[dict.experiencePage.title, "/experiences"]])} />
       <Row className="p-3">
         <h1 className="text-[1.75rem] font-semibold tracking-tight text-title">{dict.experiencePage.title}</h1>
         <p className="text-sm text-mutedForeground">{dict.experiencePage.subtitle}</p>
