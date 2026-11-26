@@ -2,6 +2,7 @@
 
 import { useEffect, useRef, useState } from "react";
 import { useI18n } from "@/lib/locale-client";
+import { fillStyle } from "@/lib/dither";
 import { AnimatePresence, motion } from "motion/react";
 import { ArrowDownIcon, CheckIcon } from "lucide-react";
 import { AGENTS, ARROW_HEADING, ARROW_TIP, type AgentState, type Rect } from "./agents";
@@ -41,7 +42,7 @@ function Cursor({
         />
       </svg>
       <span
-        className="absolute left-3.5 top-4 whitespace-nowrap px-1.5 py-[1px] rounded-[5px] font-mono text-[10px] font-medium text-white shadow-sm"
+        className="absolute left-3.5 top-4 whitespace-nowrap px-2 py-[1px] rounded-full font-mono text-[10px] font-medium text-white shadow-sm"
         style={{ background: color }}
       >
         {name}
@@ -223,7 +224,7 @@ function MorphAvatar({
       })}
       <motion.span
         key="claude-label"
-        className="absolute left-0 top-0 -translate-x-1/2 px-1.5 py-[1px] rounded-[5px] font-mono text-[10px] font-medium text-white whitespace-nowrap"
+        className="absolute left-0 top-0 -translate-x-1/2 px-2 py-[1px] rounded-full font-mono text-[10px] font-medium text-black whitespace-nowrap"
         style={{ left: merge.x, top: merge.y + AVATAR_SIZE / 2 + 4, background: AVATAR_COLOR }}
         initial={{ opacity: 0, y: -4 }}
         animate={{ opacity: 1, y: 0, transition: { delay: 0.75, duration: 0.3 } }}
@@ -312,14 +313,27 @@ export function SwarmPill({ phase, progress, waiting, onSkip }: PillProps) {
           className="fixed top-[60px] right-3 z-[60] flex items-center gap-2.5 pl-1.5 pr-1.5 py-1.5 rounded-full border border-border bg-background/90 backdrop-blur-sm shadow-lg"
         >
           <div className="flex -space-x-1.5">
-            {AGENTS.map((a) => (
+            {AGENTS.map((a, i) => (
+              // Each agent is a dithered disc in its own colour; the gradient
+              // runs from a different side per agent so no two look alike.
               <span
                 key={a.id}
                 title={a.name}
-                className="size-5 grid place-items-center rounded-full text-[9px] font-bold text-white ring-2 ring-background"
-                style={{ background: a.color }}
+                aria-label={a.name}
+                className="relative size-5 overflow-hidden rounded-full ring-2 ring-background bg-background"
               >
-                {a.initial}
+                <span className="absolute inset-0 opacity-25" style={{ background: a.color }} />
+                <span
+                  className="absolute inset-0"
+                  style={fillStyle("gradient", {
+                    color: a.color,
+                    edge: (["bottom", "left", "top", "right"] as const)[i % 4],
+                    length: 8,
+                    from: 1,
+                    to: 0.25,
+                    cell: 2,
+                  })}
+                />
               </span>
             ))}
           </div>

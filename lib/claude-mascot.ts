@@ -4,7 +4,7 @@
  * reproduzem a forma exata. Usado pelo avatar do enxame e pelo jogo do banner.
  */
 export const MASCOT_GRID = 16;
-export const MASCOT_COLOR = "#10b981";
+export const MASCOT_COLOR = "#00d26a";
 
 export type MascotCell = { col: number; row: number };
 
