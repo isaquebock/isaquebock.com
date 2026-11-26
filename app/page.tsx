@@ -1,3 +1,4 @@
+import type { Metadata } from "next";
 import { Hero } from "@/components/hero";
 import { Section } from "@/components/section";
 import { DashedGrid, DashedList, HLine, Row } from "@/components/frame";
@@ -10,6 +11,8 @@ import { Build, SwarmProvider } from "@/components/swarm/swarm";
 import { projects } from "@/data/projects";
 import { experiences } from "@/data/experiences";
 import { skills } from "@/data/skills";
+
+export const metadata: Metadata = { alternates: { canonical: "/" } };
 
 export default function Home() {
   const featured = projects.filter((p) => p.featured).slice(0, 4);

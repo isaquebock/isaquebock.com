@@ -7,6 +7,7 @@ import { Chip } from "@/components/skills";
 import { HLine, Row } from "@/components/frame";
 import { ProjectCover } from "@/components/dither/project-cover";
 import { getProject, projects } from "@/data/projects";
+import { pageMetadata } from "@/lib/seo";
 
 export function generateStaticParams() {
   return projects.map((p) => ({ slug: p.slug }));
@@ -15,7 +16,9 @@ export function generateStaticParams() {
 export async function generateMetadata(props: PageProps<"/projects/[slug]">): Promise<Metadata> {
   const { slug } = await props.params;
   const project = getProject(slug);
-  return project ? { title: project.title, description: project.description } : {};
+  return project
+    ? pageMetadata({ title: project.title, description: project.description, path: `/projects/${project.slug}`, type: "article" })
+    : {};
 }
 
 /** Turns **bold** into <strong>. */

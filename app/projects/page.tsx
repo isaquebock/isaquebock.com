@@ -4,8 +4,13 @@ import { GithubIcon } from "@/components/brand-icons";
 import { DashedGrid, HLine, Row } from "@/components/frame";
 import { projects } from "@/data/projects";
 import { profile } from "@/data/profile";
+import { pageMetadata } from "@/lib/seo";
 
-export const metadata: Metadata = { title: "Projects" };
+export const metadata: Metadata = pageMetadata({
+  title: "Projects",
+  description: `Projects built by ${profile.name}: products, experiments and open source work.`,
+  path: "/projects",
+});
 
 export default function ProjectsPage() {
   return (

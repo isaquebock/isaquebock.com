@@ -148,6 +148,11 @@ export function SwarmProvider({ children }: { children: React.ReactNode }) {
         });
       };
 
+      const hide = (id: string) =>
+        setAgents((a) =>
+          a[id]?.visible === false ? a : { ...a, [id]: { ...a[id], visible: false, sel: null, hex: null } },
+        );
+
       setProgress({ done: 0, total: ids.length });
       setPhase("running");
 
@@ -167,9 +172,12 @@ export function SwarmProvider({ children }: { children: React.ReactNode }) {
           if (!task) {
             // Everything on screen is built: while the user doesn't scroll, the
             // swarm follows the cursor (see effect below) instead of parking.
+            // On touch screens there is no cursor, so idle agents vanish and
+            // come back when a scroll reveals new blocks.
             const idle = busy === 0 && pending(0).length === 0;
             if (idle) setWaiting(true);
-            if (!idle || !matchMedia("(pointer: fine)").matches) park(id, slot);
+            if (!matchMedia("(pointer: fine)").matches) hide(id);
+            else if (!idle) park(id, slot);
             await sleep(220, signal);
             continue;
           }

@@ -2,8 +2,14 @@ import type { Metadata } from "next";
 import { ExperienceItem } from "@/components/experience-item";
 import { DashedList, HLine, Row } from "@/components/frame";
 import { experiences } from "@/data/experiences";
+import { profile } from "@/data/profile";
+import { pageMetadata } from "@/lib/seo";
 
-export const metadata: Metadata = { title: "Experience" };
+export const metadata: Metadata = pageMetadata({
+  title: "Experience",
+  description: `${profile.name}'s work experience: ${experiences.map((e) => e.company).join(", ")}. Roles, responsibilities and the stack behind each one.`,
+  path: "/experiences",
+});
 
 export default function ExperiencesPage() {
   return (
